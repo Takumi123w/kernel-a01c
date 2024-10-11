@@ -69,8 +69,8 @@ endif
         obj-y += wmt_chrdev_wifi/
         obj-y += wlan_drv_gen2/
         obj-y += bt/
-        obj-y += fm/
-        obj-y += gps/
+        #obj-y += fm/
+        #obj-y += gps/
     endif
 
 # Otherwise we were called directly from the command line;
