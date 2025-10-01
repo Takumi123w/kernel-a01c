@@ -35,6 +35,7 @@
 #include <linux/crypto.h>
 #include <linux/mempool.h>
 #include <linux/zpool.h>
+#include <linux/export.h> 
 
 #include <linux/mm_types.h>
 #include <linux/page-flags.h>
@@ -76,10 +77,10 @@ static u64 zswap_duplicate_entry;
 * tunables
 **********************************/
 
-#define ZSWAP_PARAM_UNSET ""
+#define ZSWAP_PARAM_UNSET "Y"
 
-/* Enable/disable zswap (disabled by default) */
-static bool zswap_enabled;
+/* Enable/disable zswap (Enable by default) */
+static bool zswap_enabled = true;
 static int zswap_enabled_param_set(const char *,
 				   const struct kernel_param *);
 static struct kernel_param_ops zswap_enabled_param_ops = {
@@ -89,7 +90,7 @@ static struct kernel_param_ops zswap_enabled_param_ops = {
 module_param_cb(enabled, &zswap_enabled_param_ops, &zswap_enabled, 0644);
 
 /* Crypto compressor to use */
-#define ZSWAP_COMPRESSOR_DEFAULT "lzo"
+#define ZSWAP_COMPRESSOR_DEFAULT "lz4"
 static char *zswap_compressor = ZSWAP_COMPRESSOR_DEFAULT;
 static int zswap_compressor_param_set(const char *,
 				      const struct kernel_param *);
@@ -102,7 +103,7 @@ module_param_cb(compressor, &zswap_compressor_param_ops,
 		&zswap_compressor, 0644);
 
 /* Compressed storage zpool to use */
-#define ZSWAP_ZPOOL_DEFAULT "zbud"
+#define ZSWAP_ZPOOL_DEFAULT "zsmalloc"
 static char *zswap_zpool_type = ZSWAP_ZPOOL_DEFAULT;
 static int zswap_zpool_param_set(const char *, const struct kernel_param *);
 static struct kernel_param_ops zswap_zpool_param_ops = {
@@ -113,7 +114,7 @@ static struct kernel_param_ops zswap_zpool_param_ops = {
 module_param_cb(zpool, &zswap_zpool_param_ops, &zswap_zpool_type, 0644);
 
 /* The maximum percentage of memory that the compressed pool can occupy */
-static unsigned int zswap_max_pool_percent = 20;
+static unsigned int zswap_max_pool_percent = 54;
 module_param_named(max_pool_percent, zswap_max_pool_percent, uint, 0644);
 
 /*********************************
@@ -1166,6 +1167,12 @@ static void zswap_frontswap_invalidate_area(unsigned type)
 	zswap_trees[type] = NULL;
 }
 
+u64 zswap_get_pool_size(void)
+{
+    return zswap_pool_total_size;
+}
+EXPORT_SYMBOL(zswap_get_pool_size);
+
 static void zswap_frontswap_init(unsigned type)
 {
 	struct zswap_tree *tree;
@@ -1244,12 +1251,32 @@ static void __exit zswap_debugfs_exit(void) { }
 /*********************************
 * module init and exit
 **********************************/
+// mm/zswap.c
+
 static int __init init_zswap(void)
 {
-	struct zswap_pool *pool;
-	int ret;
+    struct zswap_pool *pool;
+    int ret;
 
-	zswap_init_started = true;
+    /* In Here logic for dynamic zswap */
+
+    #define DEFAULT_ZSWAP_PERCENT 54
+    #define RAM_LOW_THRESHOLD_PAGES (1500 * 1024 / PAGE_SIZE)
+    extern unsigned long totalram_pages; 
+
+    if (zswap_max_pool_percent == DEFAULT_ZSWAP_PERCENT) {
+        if (totalram_pages < RAM_LOW_THRESHOLD_PAGES) {
+        /* 256MB ZSWAP */
+            zswap_max_pool_percent = 25;
+            pr_info("Detected device 1GB, setting max_pool_percent to 25%%\n");
+        } else {
+        /* 1GB ZSWAP */
+            zswap_max_pool_percent = 54;
+            pr_info("Detected device 2GB, setting max_pool_percent to 54%%\n");
+        }
+    }
+
+    zswap_init_started = true;
 
 	if (zswap_entry_cache_create()) {
 		pr_err("entry cache creation failed\n");
