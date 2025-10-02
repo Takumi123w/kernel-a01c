@@ -4,7 +4,7 @@
 
 If have low speed network use this :
 
-git clone --depth=1 https://github.com/Takumi123w/kernel-a01c
+git clone --depth=1 --branch KSU_Next https://github.com/Takumi123w/kernel-a01c
 
 a01 core overclock kernel [A013X]
 
