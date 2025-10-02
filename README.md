@@ -1,5 +1,7 @@
 # KatsuragiKernel
 
+!!Need connect internet while build kernel for download KSU!!
+
 If have low speed network use this :
 
 git clone --depth=1 https://github.com/Takumi123w/kernel-a01c
