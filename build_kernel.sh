@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# KSU NEXT Download
+if [ -e $(pwd)/KernelSU-Next ]
+then
+echo "Skip download KernelSU-Next because already have"
+else
+curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -
+fi
+
+# Replace arch for 32bit support
+cp -rf $(pwd)/arch.h $(pwd)/drivers/kernelsu/
+
 export CROSS_COMPILE=$(pwd)/arm-linux-androideabi-4.9/bin/arm-linux-androidkernel-
 export CC=$(pwd)/arm-linux-androideabi-4.9/bin/arm-linux-androidkernel-gcc
 export CLANG_TRIPLE=arm-linux-androidkernel-gcc
