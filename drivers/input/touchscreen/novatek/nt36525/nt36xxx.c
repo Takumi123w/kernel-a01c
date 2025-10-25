@@ -692,7 +692,7 @@ info_retry:
 					"abs_x_max=%d, abs_y_max=%d, max_button_num=%d!\n",
 					ts->fw_ver, ts->platdata->x_num, ts->platdata->y_num,
 					ts->platdata->abs_x_max, ts->platdata->abs_y_max, ts->max_button_num);
-			ret = -1;
+			ret = 0;
 		}
 	} else {
 		ret = 0;
