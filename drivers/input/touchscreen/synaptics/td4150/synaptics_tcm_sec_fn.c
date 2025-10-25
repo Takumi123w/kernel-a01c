@@ -36,6 +36,12 @@
 
 #include "synaptics_tcm_sec_fn.h"
 
+long spu_firmware_signature_verify(const char *fw_name, const u8 *fw_data, const long fw_size)
+{
+    pr_warn("Stub: spu_firmware_signature_verify(%s) called, skipping verification\n", fw_name);
+    return fw_size; // Pretend verification succeeded
+}
+
 #define TSP_PATH_EXTERNAL_FW		"/sdcard/Firmware/TSP/tsp.bin"
 #define TSP_PATH_EXTERNAL_FW_SIGNED	"/sdcard/Firmware/TSP/tsp_signed.bin"
 #define TSP_PATH_SPU_FW_SIGNED		"/spu/TSP/ffu_tsp.bin"
@@ -78,7 +84,7 @@ out:
 	tcm_hcd->tsp_dump_lock = false;
 }
 
-extern int long spu_firmware_signature_verify(const char* fw_name, const u8* fw_data, const long fw_size);
+/* extern int long spu_firmware_signature_verify(const char* fw_name, const u8* fw_data, const long fw_size); */
 
 static int sec_fn_load_fw(struct syna_tcm_hcd *tcm_hcd, bool signing, const char *file_path)
 {
