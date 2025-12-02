@@ -9,7 +9,7 @@ curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/ke
 fi
 
 # Replace arch for 32bit support
-cp -rf $(pwd)/arch.h $(pwd)/drivers/kernelsu/
+cp -rf $(pwd)/arch.h $(pwd)/drivers/kernelsu/kernel
 
 export CROSS_COMPILE=$(pwd)/arm-linux-androideabi-4.9/bin/arm-linux-androidkernel-
 export CC=$(pwd)/arm-linux-androideabi-4.9/bin/arm-linux-androidkernel-gcc
