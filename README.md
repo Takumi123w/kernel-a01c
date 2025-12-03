@@ -1,4 +1,4 @@
-# KatsuragiKernel
+# KatsuragiKernel + KSU Next
 
 !!Need connect internet while build kernel for download KSU!!
 
