@@ -2559,16 +2559,37 @@ static int mt_gpufreq_pdrv_probe(struct platform_device *pdev)
 /***************************************
  * this function should never be called
  ****************************************/
+// Memory Leaks Fix
 static int mt_gpufreq_pdrv_remove(struct platform_device *pdev)
 {
 #ifdef MT_GPUFREQ_INPUT_BOOST
-	input_unregister_handler(&mt_gpufreq_input_handler);
-
-	kthread_stop(mt_gpufreq_up_task);
-	put_task_struct(mt_gpufreq_up_task);
+    input_unregister_handler(&mt_gpufreq_input_handler);
+    if (mt_gpufreq_up_task) {
+        kthread_stop(mt_gpufreq_up_task);
+        put_task_struct(mt_gpufreq_up_task);
+    }
 #endif
 
-	return 0;
+    if (mt_gpufreq_pmic && !IS_ERR(mt_gpufreq_pmic->reg_vcore)) {
+        regulator_put(mt_gpufreq_pmic->reg_vcore);
+    }
+	
+    if (g_apmixed_base) {
+        iounmap(g_apmixed_base);
+        g_apmixed_base = NULL;
+    }
+	
+    kfree(mt_gpufreqs_power);
+    kfree(mt_gpufreqs);
+    kfree(mt_gpufreqs_default);
+    kfree(mt_gpufreq_clk);
+    kfree(mt_gpufreq_pmic);
+    mt_gpufreqs_power = NULL;
+    mt_gpufreqs = NULL;
+    mt_gpufreqs_default = NULL;
+    mt_gpufreq_clk = NULL;
+    mt_gpufreq_pmic = NULL;
+    return 0;
 }
 
 static const struct dev_pm_ops mt_gpufreq_pm_ops = {
@@ -3587,11 +3608,15 @@ out:
 	return ret;
 }
 #endif
+// Memory leak Fix
 static void __exit mt_gpufreq_exit(void)
 {
-	platform_driver_unregister(&mt_gpufreq_pdrv);
+#ifdef CONFIG_PROC_FS
+    remove_proc_subtree("gpufreq", NULL); 
+#endif
+    platform_driver_unregister(&mt_gpufreq_pdrv);
 #if !defined(CONFIG_OF)
-	platform_device_unregister(&mt_gpufreq_pdev);
+    platform_device_unregister(&mt_gpufreq_pdev);
 #endif
 }
 
