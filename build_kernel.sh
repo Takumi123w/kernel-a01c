@@ -1,4 +1,9 @@
 #!/bin/bash
+if [ -e $(pwd)/KernelSU-Next ]
+echo "KSU exist skip Download KSU"
+else
+curl -LSs "https://raw.githubusercontent.com/Takumi123w/KernelSU-Next-A01core/stable/kernel/setup.sh" | bash -
+fi
 
 export CROSS_COMPILE=$(pwd)/arm-linux-androideabi-4.9/bin/arm-linux-androidkernel-
 export CC=$(pwd)/arm-linux-androideabi-4.9/bin/arm-linux-androidkernel-gcc
