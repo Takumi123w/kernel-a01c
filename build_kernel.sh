@@ -26,4 +26,4 @@ cp out/arch/arm/boot/Image $(pwd)/arch/arm64/boot/Image
 rm -rf $(pwd)/AnyKernel3/Image
 cp out/arch/arm/boot/Image $(pwd)/AnyKernel3/Image
 cd AnyKernel3
-zip -r9 "Kernel-Repack-$TIME.zip" * -x .git README.md *placeholder
+zip -r9 "Kernel-Repack-$TIME.zip" * -x .git *.zip README.md *placeholder
