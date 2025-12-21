@@ -2,6 +2,7 @@
 
 # KSU Download
 if [ -e $(pwd)/KernelSU ]
+then
 echo "KSU exist skip Download KSU"
 else
 curl -LSs "https://raw.githubusercontent.com/rsuntk/KernelSU/main/kernel/setup.sh" | bash -s v3.0.0-30-legacy
