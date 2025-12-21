@@ -8,7 +8,7 @@ git clone --depth=1 https://github.com/Takumi123w/kernel-a01c
 
 -=Branch repo KSU=-
 
-git clone -b KSU-Next-Moded --single-branch https://github.com/Takumi123w/kernel-a01c.git
+git clone -b KSU-Moded --single-branch https://github.com/Takumi123w/kernel-a01c.git
 
 a01 core overclock kernel [A013X]
 
