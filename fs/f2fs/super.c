@@ -1582,62 +1582,63 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
 }
 
 #define DEFAULT_ISSUE_CHECKPOINT_IOPRIO (3)
-
+// Well just try in here idk its work or not
 static void default_options(struct f2fs_sb_info *sbi, bool remount)
 {
-	/* init some FS parameters */
-	F2FS_OPTION(sbi).active_logs = NR_CURSEG_TYPE;
-	F2FS_OPTION(sbi).inline_xattr_size = DEFAULT_INLINE_XATTR_ADDRS;
-	F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
-	F2FS_OPTION(sbi).alloc_mode = ALLOC_MODE_DEFAULT;
-	F2FS_OPTION(sbi).fsync_mode = FSYNC_MODE_POSIX;
-	F2FS_OPTION(sbi).test_dummy_encryption = false;
-	F2FS_OPTION(sbi).s_resuid = make_kuid(&init_user_ns, F2FS_DEF_RESUID);
-	F2FS_OPTION(sbi).s_resgid = make_kgid(&init_user_ns, F2FS_DEF_RESGID);
-	F2FS_OPTION(sbi).flush_group = make_kgid(&init_user_ns, F2FS_DEF_FLUSHGROUP);
+    F2FS_OPTION(sbi).active_logs = NR_CURSEG_TYPE;
+    F2FS_OPTION(sbi).inline_xattr_size = DEFAULT_INLINE_XATTR_ADDRS;
+    F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
+    F2FS_OPTION(sbi).alloc_mode = ALLOC_MODE_DEFAULT;
+    F2FS_OPTION(sbi).fsync_mode = FSYNC_MODE_POSIX;
+    F2FS_OPTION(sbi).test_dummy_encryption = false;
+    F2FS_OPTION(sbi).s_resuid = make_kuid(&init_user_ns, F2FS_DEF_RESUID);
+    F2FS_OPTION(sbi).s_resgid = make_kgid(&init_user_ns, F2FS_DEF_RESGID);
+    F2FS_OPTION(sbi).flush_group = make_kgid(&init_user_ns, F2FS_DEF_FLUSHGROUP);
 
-	if (!remount)
-		F2FS_OPTION(sbi).ckpt_ioprio = DEFAULT_ISSUE_CHECKPOINT_IOPRIO;
+    if (!remount)
+        F2FS_OPTION(sbi).ckpt_ioprio = DEFAULT_ISSUE_CHECKPOINT_IOPRIO;
 
-	set_opt(sbi, BG_GC);
-	set_opt(sbi, INLINE_XATTR);
-	set_opt(sbi, INLINE_DATA);
-	set_opt(sbi, INLINE_DENTRY);
-	set_opt(sbi, EXTENT_CACHE);
-	set_opt(sbi, NOHEAP);
-	sbi->sb->s_flags |= MS_LAZYTIME;
-	clear_opt(sbi, DISABLE_CHECKPOINT);
-	/* P190412-00841 disable flush_merge by default */
-	//set_opt(sbi, FLUSH_MERGE);
-	set_opt(sbi, DISCARD);
-	if (f2fs_sb_has_blkzoned(sbi))
-		set_opt_mode(sbi, F2FS_MOUNT_LFS);
-	else
-		set_opt_mode(sbi, F2FS_MOUNT_ADAPTIVE);
-
+    set_opt(sbi, BG_GC);
+    set_opt(sbi, INLINE_XATTR);
+    set_opt(sbi, INLINE_DATA);
+    set_opt(sbi, INLINE_DENTRY);
+    set_opt(sbi, EXTENT_CACHE);
+    set_opt(sbi, NOHEAP);
+    sbi->sb->s_flags |= MS_LAZYTIME;
+    clear_opt(sbi, DISABLE_CHECKPOINT);
+    set_opt(sbi, DISCARD);
+    set_opt(sbi, NOBARRIER);
+    set_opt_mode(sbi, F2FS_MOUNT_LFS);
+    sbi->readdir_ra = 1; 
+    if (sbi->sm_info)
+        sbi->sm_info->min_ipu_util = 100;
+    if (f2fs_sb_has_blkzoned(sbi))
+        set_opt_mode(sbi, F2FS_MOUNT_LFS);
+    else
+        set_opt_mode(sbi, F2FS_MOUNT_LFS);
+        
 #ifdef CONFIG_F2FS_FS_XATTR
-	set_opt(sbi, XATTR_USER);
+    set_opt(sbi, XATTR_USER);
 #endif
 #ifdef CONFIG_F2FS_FS_POSIX_ACL
-	set_opt(sbi, POSIX_ACL);
+    set_opt(sbi, POSIX_ACL);
 #endif
 
-	f2fs_build_fault_attr(sbi, 0, 0);
-
-	if (sbi->raw_super->mount_opts[0]) {
-		struct super_block *sb = sbi->sb;
-		int err;
-		char *mount_opts = kstrndup(sbi->raw_super->mount_opts,
-				sizeof(sbi->raw_super->mount_opts),
-				GFP_KERNEL);
-		if (!mount_opts)
-			return;
-		err = parse_options(sb, mount_opts);
-		if (err)
-			f2fs_msg(sb, KERN_WARNING,
-				"failed to parse options in superblock\n");
-		kfree(mount_opts);
-	}
+    f2fs_build_fault_attr(sbi, 0, 0);
+    if (sbi->raw_super->mount_opts[0]) {
+        struct super_block *sb = sbi->sb;
+        int err;
+        char *mount_opts = kstrndup(sbi->raw_super->mount_opts,
+                    sizeof(sbi->raw_super->mount_opts),
+                    GFP_KERNEL);
+        if (!mount_opts)
+            return;
+        err = parse_options(sb, mount_opts);
+        if (err)
+            f2fs_msg(sb, KERN_WARNING,
+                "failed to parse options in superblock\n");
+        kfree(mount_opts);
+    }
 }
 
 #ifdef CONFIG_QUOTA
