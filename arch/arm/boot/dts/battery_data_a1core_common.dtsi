@@ -236,60 +236,60 @@
  *  29	CABLE_MAX,
 */
 	cable-info {
-		   default_input_current = <1550>;
-		   default_charging_current = <1775>;
+		   default_input_current = <1800>;
+		   default_charging_current = <2150>;
 		   full_check_current_1st = <325>;
 		   full_check_current_2nd = <100>;
 
 		   current_group_1 {
-		   	       cable_number = <1 4 19 21 22 23>;
-			       input_current = <450>;
-			       charging_current = <800>;
-		   };
+					cable_number = <1 4 19 21 22 23>;
+					input_current = <1800>;
+					charging_current = <2150>;
+		  };
 		   current_group_2 {
 		   	       cable_number = <2 25>;
-			       input_current = <1000>;
-			       charging_current = <1000>;
+			       input_current = <1800>;
+			       charging_current = <2150>;
 		  };
 		   current_group_3 {
 		   	       cable_number = <5>;
-			       input_current = <1000>;
-			       charging_current = <1000>;
+			       input_current = <1800>;
+			       charging_current = <2150>;
 		  };
 		   current_group_4 {
 		   	       cable_number = <6 7 8>;
-			       input_current = <1675>;
+			       input_current = <1800>;
 			       charging_current = <2150>;
 		  };
 		   current_group_5 {
 		   	       cable_number = <9>;
-			       input_current = <1675>;
+			       input_current = <1800>;
 			       charging_current = <2150>;
 		  };
 		   current_group_6 {
 		   	       cable_number = <10 12 14 15 27>;
-			       input_current = <900>;
-			       charging_current = <1050>;
+			       input_current = <1800>;
+			       charging_current = <2150>;
 		  };
 		   current_group_7 {
 		   	       cable_number = <13>;
-			       input_current = <700>;
-			       charging_current = <1050>;
+			       input_current = <1800>;
+			       charging_current = <2150>;
 		  };
 		   current_group_8 {
 		   	       cable_number = <24>;
-			       input_current = <1000>;
-			       charging_current = <450>;
+			       input_current = <1800>;
+			       charging_current = <2150>;
 		  };
 		   current_group_9 {
 		   	       cable_number = <26>;
-			       input_current = <2000>;
-			       charging_current = <1800>;
+			       input_current = <1800>;
+			       charging_current = <2150>;
 		  };
 		   current_group_10 {
 		   	       cable_number = <11 16 28>;
-			       input_current = <650>;
-			       charging_current = <1050>;
+			       input_current = <1800>;
+			       charging_current = <2150>;
 		  };
 	};
 	s2mu005-charger {
