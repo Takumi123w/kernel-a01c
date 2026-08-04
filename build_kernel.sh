@@ -8,16 +8,19 @@ else
 git clone https://github.com/Takumi123w/AnyKernel3.git
 fi
 
-export CROSS_COMPILE=$(pwd)/arm-linux-androideabi-4.9/bin/arm-linux-androidkernel-
-export CC=$(pwd)/arm-linux-androideabi-4.9/bin/arm-linux-androidkernel-gcc
-export CLANG_TRIPLE=arm-linux-androidkernel-gcc
+# Change to 15.3 for no reason
+TOOLCHAIN=$(pwd)/arm-gnu-toolchain-15.3.rel1-x86_64-arm-none-linux-gnueabihf/bin
+
+export CROSS_COMPILE=$TOOLCHAIN/arm-none-linux-gnueabihf-
+export CC=$TOOLCHAIN/arm-none-linux-gnueabihf-gcc
+export PATH=$TOOLCHAIN:$PATH
 export ARCH=arm
 
 export KCFLAGS=-w
 export CONFIG_SECTION_MISMATCH_WARN_ONLY=y
 
 make -C $(pwd) O=$(pwd)/out KCFLAGS=-w CONFIG_SECTION_MISMATCH_WARN_ONLY=y a01core_defconfig
-make -C $(pwd) O=$(pwd)/out KCFLAGS=-w CONFIG_SECTION_MISMATCH_WARN_ONLY=y -j16
+ionice -c3 nice -n 19 make -C $(pwd) O=$(pwd)/out KCFLAGS=-w CONFIG_SECTION_MISMATCH_WARN_ONLY=y -j$(($(nproc) - 1))
 
 cp out/arch/arm/boot/Image $(pwd)/arch/arm/boot/Image
 cp out/arch/arm/boot/Image $(pwd)/arch/arm64/boot/Image
